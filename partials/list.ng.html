@@ -1,0 +1,25 @@
+<div class="row">
+    <div class="col-md-12">
+        <h1>Bugs</h1>
+
+        <div class="jumbotron" ng-if="reports.length == 0">
+            <h1>No open bug reports</h1>
+            <p ng-if="currentUser">Add your a <a ui-sref="new">bug report</a>!</p>
+        </div>
+
+        <a ui-sref="new" class="btn btn-primary btn-block" ng-if="currentUser && reports.length > 0">
+            Report
+        </a>
+
+        <ol class="report-list">
+            <li class="report-list__item" ng-repeat="report in reports">
+                <a ui-sref="view({number: report.number})" ui-sref-options="">#{{ report.number }} {{ report.title }}</a>
+                <span class="label label-default">{{ report.status }}</span>
+            </li>
+        </ol>
+
+        <ol class="report-list-closed">
+            <li reports-list-item ng-repeat="report in closedReports">{{ report }}</li>
+        </ol>
+    </div>
+</div>

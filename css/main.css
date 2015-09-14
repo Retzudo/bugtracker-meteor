@@ -1,0 +1,20 @@
+.report-list, .report-list-closed {
+    list-style: none;
+    width: 100%;
+    padding: 0;
+    margin: 2rem 0;
+}
+
+.report-list-closed {
+    opacity: 0.5;
+}
+
+.report-list__item {
+    font-size: 2rem;
+    padding: 2rem;
+    background-color: #333;
+}
+
+.report-list__item:nth-child(2n) {
+    background-color: #2F2F2F;
+}
