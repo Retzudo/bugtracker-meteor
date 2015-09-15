@@ -34,23 +34,42 @@ if (Meteor.isClient) {
     angular.module('BugReportApp').controller('ReportsListController', ['$scope', '$meteor',
         function ($scope, $meteor) {
             $scope.reports = $meteor.collection(function() {
-                return Reports.find({status: {$ne: 'closed'}});
+                return Reports.find(
+                    {status: {$ne: 'closed'}},
+                    {sort: {number: -1}}
+                );
             });
 
             $scope.closedReports = $meteor.collection(function() {
-                return Reports.find({status: 'closed'});
+                return Reports.find(
+                    {status: 'closed'},
+                    {sort: {number: -1}}
+                );
             });
         }
     ]);
 
     angular.module('BugReportApp').controller('ViewReportController', ['$scope', '$meteor', '$stateParams', '$state',
         function ($scope, $meteor, $stateParams, $state) {
-            $scope.report = $meteor.object(Reports, {number: $stateParams.number});
-            $scope.references = $meteor.collection(function () {
-                return Reports.find({number: {$in: $scope.report.references || []}});
-            });
-
             $scope.edit = false;
+            $scope.report = $meteor.object(Reports, {number: $stateParams.number});
+
+            updateReferences();
+
+            $scope.toggleEdit = function() {
+                $scope.edit = !$scope.edit;
+                if (!$scope.edit) {
+                    updateReferences();
+                }
+            };
+
+            $scope.open = function () {
+                $meteor.call('openReport', $scope.report._id);
+            };
+
+            $scope.close = function () {
+                $meteor.call('closeReport', $scope.report._id);
+            };
 
             $scope.delete = function () {
                 if (confirm('Are you sure?')) {
@@ -61,13 +80,11 @@ if (Meteor.isClient) {
                 }
             };
 
-            $scope.close = function () {
-                $meteor.call('closeReport', $scope.report._id);
-            };
-
-            $scope.open = function () {
-                $meteor.call('openReport', $scope.report._id);
-            };
+            function updateReferences() {
+                $scope.references = $meteor.collection(function () {
+                    return Reports.find({number: {$in: $scope.report.references || []}});
+                });
+            }
         }
     ]);
 
@@ -89,16 +106,22 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
     Meteor.startup(function () {
-
+        Reports.allow({
+            insert: function (userId, post) {
+                return true;
+            },
+            update: function (userId, post) {
+                return true;
+            },
+            remove: function (userId, post) {
+                return true;
+            }
+        });
     });
 }
 
 Meteor.methods({
     createReport: function (title, description) {
-        if (!Meteor.userId()) {
-            throw new Meteor.Error('not-authorized');
-        }
-
         var nextNumber;
         var lastReport = Reports.findOne({}, {sort: {number: -1}});
 
@@ -121,18 +144,10 @@ Meteor.methods({
     },
 
     deleteReport: function (id) {
-        if (!Meteor.userId()) {
-            throw new Meteor.Error('not-authorized');
-        }
-
         Reports.remove({_id: id});
     },
 
     closeReport: function(id) {
-        if (!Meteor.userId()) {
-            throw new Meteor.Error('not-authorized');
-        }
-
         Reports.update({_id: id}, {
             $set: {
                 status: 'closed'
@@ -141,10 +156,6 @@ Meteor.methods({
     },
 
     openReport: function(id) {
-        if (!Meteor.userId()) {
-            throw new Meteor.Error('not-authorized');
-        }
-
         Reports.update({_id: id}, {
             $set: {
                 status: 'open'

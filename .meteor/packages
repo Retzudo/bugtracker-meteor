@@ -6,10 +6,8 @@
 
 meteor-platform
 autopublish
-insecure
 urigo:angular
 urigo:angular-ui-router
 angularui:angular-ui-router
 accounts-ui
 accounts-password
-tonekk:angular-moment
