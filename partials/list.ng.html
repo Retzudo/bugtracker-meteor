@@ -18,7 +18,7 @@
             </li>
         </ol>
 
-        <ol class="report-list-closed">
+        <ol class="report-list--closed">
             <li class="report-list__item" ng-repeat="report in closedReports">
                 <a ui-sref="view({number: report.number})" ui-sref-options="">#{{ report.number }} {{ report.title }}</a>
                 <span class="label label-default">{{ report.status }}</span>

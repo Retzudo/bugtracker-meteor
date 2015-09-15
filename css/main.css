@@ -1,11 +1,11 @@
-.report-list, .report-list-closed {
+.report-list, .report-list--closed {
     list-style: none;
     width: 100%;
     padding: 0;
     margin: 2rem 0;
 }
 
-.report-list-closed {
+.report-list--closed {
     opacity: 0.5;
 }
 
