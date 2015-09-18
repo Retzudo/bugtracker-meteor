@@ -7,8 +7,9 @@ if (Meteor.isClient) {
 
     angular.module('BugReportApp', ['angular-meteor', 'ui.router']);
 
-    angular.module('BugReportApp').config(['$stateProvider', '$urlRouterProvider',
-        function ($stateProvider, $urlRouterProvider) {
+    angular.module('BugReportApp').config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
+        function ($stateProvider, $urlRouterProvider, $locationProvider) {
+            $locationProvider.html5Mode(true);
             $urlRouterProvider.otherwise('/');
 
             $stateProvider
